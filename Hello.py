@@ -1,51 +1,44 @@
-# Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 18 21:29:23 2024
+
+@author: den_0
+"""
 
 import streamlit as st
-from streamlit.logger import get_logger
+#from streamlit_option_menu import option_menu
+#!pip install pandas
 
-LOGGER = get_logger(__name__)
-
-
-def run():
-    st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
-    )
-
-    st.write("# Welcome to Streamlit! 👋")
-
-    st.sidebar.success("Select a demo above.")
-
-    st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
-    )
+import pandas as pd
+import numpy as np
+import pandas as pd
+import plotly.express as px
 
 
-if __name__ == "__main__":
-    run()
+# Cargar los conjuntos de datos mensuales
+df_ene = pd.read_csv('datos_enero_2021.csv')
+df_feb = pd.read_csv('datos_febrero_2021.csv')
+df_mar = pd.read_csv('datos_marzo_2021.csv')
+df_abr = pd.read_csv('datos_abril_2021.csv')
+df_may = pd.read_csv('datos_mayo_2021.csv')
+df_jun = pd.read_csv('datos_junio_2021.csv')
+
+# Convertir la columna de fecha a tipo datetime y eliminar las horas
+df_ene['Fecha'] = pd.to_datetime(df_ene['Fecha']).dt.date
+df_feb['Fecha'] = pd.to_datetime(df_feb['Fecha']).dt.date
+df_mar['Fecha'] = pd.to_datetime(df_mar['Fecha']).dt.date
+df_abr['Fecha'] = pd.to_datetime(df_abr['Fecha']).dt.date
+df_may['Fecha'] = pd.to_datetime(df_may['Fecha']).dt.date
+df_jun['Fecha'] = pd.to_datetime(df_jun['Fecha']).dt.date
+
+# Unir los conjuntos de datos en uno solo
+df = pd.concat([df_ene, df_feb, df_mar, df_abr, df_may, df_jun])
+
+# Crear gráficos de líneas para NO2 y PM10
+fig = px.line(df, x='Fecha', y=['NO2 (ug/m3)', 'PM10 \n(ug/m3)'], title='Evolución de NO2 y PM10 de enero a junio de 2021',
+              labels={'Fecha': 'Fecha', 'value': 'Concentración (ug/m3)', 'variable': 'Contaminante'},
+              template='plotly_dark')
+
+# Mostrar el gráfico
+fig.show()
+#https://app-9b9lfpwxfu4rm9eyycsj8v.streamlit.app/
